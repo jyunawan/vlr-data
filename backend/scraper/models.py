@@ -18,11 +18,19 @@ class Player(models.Model):
         return self.ign
 
 
+class Event(models.Model):
+    name = models.Charfield("Event", max_length=100)
+    series = models.CharField("Series", max_length=100)
+    vlr_url = models.URLField("Event Series URL", unique=True)
+
+
 class Match(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
     team1 = models.ForeignKey(Team, on_delete=models.CASCADE)
     team2 = models.ForeignKey(Team, on_delete=models.CASCADE)
     date_played = models.DateField()
     vlr_id = models.CharField("VLR Match ID", unique=True)
+    is_finished = models.BooleanField("Match Finished")
 
     def __str__(self):
         return f"{self.team1.name} vs {self.team2.name} on {self.date_played}"
@@ -32,9 +40,7 @@ class Map(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     map_number = models.PositiveSmallIntegerField("Map Number")
-    
-    class Meta:
-        unique_together = ("match", "name")
+    game_id = models.CharField("VLR Game ID", unique=True)
 
     def __str__(self):
         return f"{self.name} - {self.match}"
@@ -46,7 +52,7 @@ class PlayerStats(models.Model):
     kills = models.PositiveSmallIntegerField("Kills")
     deaths = models.PositiveSmallIntegerField("Deaths")
     assists = models.PositiveSmallIntegerField("Assists")
-    acs = models.PositiveSmallIntegerField("Average Combat Score") 
+    acs = models.PositiveSmallIntegerField("Average Combat Score")
     agent = models.CharField("Agent Played")
 
     class Meta:
