@@ -123,7 +123,7 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
             "team_2": str,              # URL of the second team
             "finished": bool,           # whether the match is finished
         }
-        
+
         or this dict if the match is finished:
         {
             "event": str,               # URL of the event
@@ -136,8 +136,8 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
             "maps_played": int,         # number of maps played
             "maps": List[dict]          # stats for each map
         }
-        
-        
+
+
         Each maps dict includes:
         {
             "team_1_score": int,        # rounds won in this map by the first team
@@ -146,7 +146,7 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
             "team_1_stats": List[dict]  # the stats for the first team (5 players)
             "team_2_stats": List[dict]  # the stats for the      the second team (5 players)
         }
-        
+
         Each of the team_x_stats dict includes:
         {
             "player": str,              # URL of the player
@@ -263,14 +263,3 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
         "maps_played": maps_played,
         "maps": map_data,
     }
-
-
-client = VLRClient()
-
-url = (
-    BASE_URL
-    + "/508828/gen-g-vs-global-esports-vct-2025-pacific-stage-2-w2/?game=all&tab=overview"
-)
-soup = client.get(url)
-
-print(parse_match_page(soup))
