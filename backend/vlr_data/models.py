@@ -6,7 +6,7 @@ class Team(models.Model):
     team_tag = models.CharField("Team Tag", max_length=5)
     team_rating = models.PositiveSmallIntegerField("Team Rating")
     vlr_id = models.CharField("VLR Team ID", unique=True)
-    last_updated = models.DateField("Last Updated")
+    last_updated = models.DateTimeField("Last Updated")
 
     def __str__(self):
         return self.name
@@ -17,7 +17,7 @@ class Player(models.Model):
     real_name = models.CharField("Real Name", max_length=200)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
     vlr_id = models.CharField("VLR Player ID", unique=True)
-    last_updated = models.DateField("Last Updated")
+    last_updated = models.DateTimeField("Last Updated")
 
     def __str__(self):
         return self.ign
@@ -33,7 +33,7 @@ class Match(models.Model):
     event = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
     team1 = models.ForeignKey(Team, on_delete=models.CASCADE)
     team2 = models.ForeignKey(Team, on_delete=models.CASCADE)
-    date_played = models.DateField("Match Date")
+    date_played = models.DateTimeField("Match Date")
     vlr_id = models.CharField("VLR Match ID", unique=True)
     is_finished = models.BooleanField("Match Finished")
 
