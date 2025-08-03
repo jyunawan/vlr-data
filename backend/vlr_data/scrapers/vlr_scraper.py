@@ -276,16 +276,16 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     Returns:
         dict: Structured dict containing either one of two dicts if the match isn't finished:
         {
-            "team_name": str,           # name of the team
-            "team_tag": str,            # shortened name for the team
-            "active_players": List[dict],     # all active players in the team
-            "team_rating": int,         # VLR team rating
+            "team_name": str,               # name of the team
+            "team_tag": str,                # shortened name for the team
+            "active_players": List[dict],   # all active players in the team
+            "team_rating": int,             # VLR team rating
         }
 
     Each active player dict includes:
     {
-        "real_name": str,               # player's real name
-        "ign": str,                     # player's in game name
+        "real_name": str,                   # player's real name
+        "ign": str,                         # player's in game name
     }
     """
     team_name = soup.select_one(".team-header-name .wf-title").get_text(strip=True)
@@ -350,9 +350,3 @@ def parse_player_page(soup: BeautifulSoup) -> dict:
         "real_name": real_name,
         "team": team,
     }
-
-
-client = VLRClient()
-url = BASE_URL + "/player/729"
-
-print(parse_player_page(client.get(url)))
