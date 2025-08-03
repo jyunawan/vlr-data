@@ -354,7 +354,3 @@ def parse_player_page(soup: BeautifulSoup) -> dict:
         "real_name": real_name,
         "team": team,
     }
-
-client = VLRClient()
-url = BASE_URL + "/509815"
-print(parse_match_page(client.get(url)))
