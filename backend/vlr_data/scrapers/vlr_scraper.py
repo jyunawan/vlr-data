@@ -143,6 +143,7 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
             "team_1_score": int,        # rounds won in this map by the first team
             "team_2_score": int,        # rounds won in this map by the second team
             "map_played": str,          # which map was played
+            "game_id": str,             # VLR game id for this map
             "team_1_stats": List[dict]  # the stats for the first team (5 players)
             "team_2_stats": List[dict]  # the stats for the the second team (5 players)
         }
@@ -205,6 +206,7 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
             .get_text(strip=True)
             .replace("PICK", "")
         )
+        game_id = map.get("data-game-id")
 
         stats = map.select("tbody")
         teams_stats = []
@@ -242,13 +244,12 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
 
             teams_stats.append(team_stats)
 
-        # add game id
-        
         map_data.append(
             {
                 "team_1_score": scores[0],
                 "team_2_score": scores[1],
                 "map_played": map_played,
+                "game_id": game_id,
                 "team_1_stats": teams_stats[0],
                 "team_2_stats": teams_stats[1],
             }
@@ -286,6 +287,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     {
         "real_name": str,                   # player's real name
         "ign": str,                         # player's in game name
+        "url": player_url                   # URL of the player
     }
     """
     team_name = soup.select_one(".team-header-name .wf-title").get_text(strip=True)
@@ -293,9 +295,10 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
         strip=True
     )
 
-    players = soup.select(".team-roster-item-name")[0:5]
+    players = soup.select(".team-roster-item")[0:5]
 
     for i in range(5):
+        player_url = BASE_URL + players[i].select_one("a").get("href")
         real_name = (
             players[i].select_one(".team-roster-item-name-alias").get_text(strip=True)
         )
@@ -303,6 +306,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
         players[i] = {
             "real_name": real_name,
             "ign": ign,
+            "url": player_url
         }
 
     team_rating = int(soup.select_one(".rating-num").get_text(strip=True))
@@ -344,9 +348,13 @@ def parse_player_page(soup: BeautifulSoup) -> dict:
     ign = soup.select_one(".wf-title").get_text(strip=True)
     real_name = soup.select_one(".player-real-name").get_text(strip=True)
     team = BASE_URL + soup.select_one(".wf-card .wf-module-item.mod-first").get("href")
-    
+
     return {
         "ign": ign,
         "real_name": real_name,
         "team": team,
     }
+
+client = VLRClient()
+url = BASE_URL + "/509815"
+print(parse_match_page(client.get(url)))
