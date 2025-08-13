@@ -117,19 +117,19 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
     Returns:
         dict: Structured dict containing either one of two dicts if the match isn't finished:
         {
-            "event": str,               # URL of the event
+            "event": str,               # URL of the event's VLR page
             "date": datetime,           # Match start time in UTC
-            "team_1": str,              # URL of the first team
-            "team_2": str,              # URL of the second team
+            "team_1": str,              # URL of the first team's VLR page
+            "team_2": str,              # URL of the second team's VLR page
             "finished": bool,           # whether the match is finished
         }
 
         or this dict if the match is finished:
         {
-            "event": str,               # URL of the event
+            "event": str,               # URL of the event's VLR page
             "date": datetime,           # Match start time in UTC
-            "team_1": str,              # URL of the first team
-            "team_2": str,              # URL of the second team
+            "team_1": str,              # URL of the first team's VLR page
+            "team_2": str,              # URL of the second team's VLR page
             "finished": bool,           # whether the match is finished
             "team_1_match_score": int,  # maps won by the first team
             "team_2_match_score": int,  # maps won by the second team
@@ -150,7 +150,7 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
 
         Each of the team_x_stats dict includes:
         {
-            "player": str,              # URL of the player
+            "player": str,              # URL of the player's VLR page
             "kills": int,               # number of kills the player got
             "deaths": int,              # number of times the player died
             "assists": int,             # number of assists the player got
@@ -287,7 +287,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     {
         "real_name": str,                   # player's real name
         "ign": str,                         # player's in game name
-        "url": player_url                   # URL of the player
+        "url": player_url                   # URL of the player's VLR page
     }
     """
     team_name = soup.select_one(".team-header-name .wf-title").get_text(strip=True)
@@ -303,11 +303,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
             players[i].select_one(".team-roster-item-name-alias").get_text(strip=True)
         )
         ign = players[i].select_one(".team-roster-item-name-real").get_text(strip=True)
-        players[i] = {
-            "real_name": real_name,
-            "ign": ign,
-            "url": player_url
-        }
+        players[i] = {"real_name": real_name, "ign": ign, "url": player_url}
 
     team_rating = int(soup.select_one(".rating-num").get_text(strip=True))
 
@@ -342,7 +338,7 @@ def parse_player_page(soup: BeautifulSoup) -> dict:
         dict: {
             "ign": str,         # player's in game name
             "real_name": str,   # player's real name
-            "team": str,        # URL of the team the player belongs to
+            "team": str,        # URL of the VLR page of the team the player belongs to
         }
     """
     ign = soup.select_one(".wf-title").get_text(strip=True)
