@@ -36,6 +36,8 @@ class Match(models.Model):
     date_played = models.DateTimeField("Match Date")
     vlr_id = models.CharField("VLR Match ID", unique=True)
     is_finished = models.BooleanField("Match Finished")
+    team1_score = models.PositiveSmallIntegerField("Team 1 Score")
+    team2_score = models.PositiveSmallIntegerField("Team 2 Score")
 
     def __str__(self):
         return f"{self.team1.name} vs {self.team2.name} on {self.date_played}"
@@ -46,6 +48,8 @@ class Map(models.Model):
     name = models.CharField(max_length=50)
     map_number = models.PositiveSmallIntegerField("Map Number")
     game_id = models.CharField("VLR Game ID", unique=True)
+    team1_score = models.PositiveSmallIntegerField("Team 1 Score")
+    team2_score = models.PositiveSmallIntegerField("Team 2 Score")
 
     def __str__(self):
         return f"{self.name} - {self.match}"
