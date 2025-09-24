@@ -7,3 +7,4 @@ frontend/count.txt
 frontend/.env
 frontend/.nitro
 frontend/.tanstack
+backend/db.sqlite3
