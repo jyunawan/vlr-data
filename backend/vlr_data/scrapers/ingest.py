@@ -66,7 +66,7 @@ def ingest_team(team_data: dict, team_url: str):
                             - "team_name": str - full name of the team
                             - "team_tag": str - shortened name for the team
                             - "team_rating": int - VLR team rating
-                            - "active_player": List[dict] - List of active player info with keys:
+                            - "player": List[dict] - List of active player info with keys:
                                 - "real_name": str - player's real name
                                 - "ign": str - player's in game name
         team_url (str): URL for the team's VLR page
@@ -84,7 +84,7 @@ def ingest_team(team_data: dict, team_url: str):
             },
         )
 
-        for player in team_data["active_players"]:
+        for player in team_data["players"]:
             player_id = get_player_id_from_url(player["url"])
 
             player, _ = Player.objects.update_or_create(
@@ -246,12 +246,14 @@ def ingest_match(match_data: dict, match_url: str):
                 "team2_score": team_2_score,
             },
         )
-
+        
+        maps = match_data["maps"]
         for i in range(match_data["maps_played"]):
-            team1_map_score = match_data["team_1_score"]
-            team2_map_score = match_data["team_2_score"]
-            map_played = match_data["map_played"]
-            game_id = match_data["game_id"]
+            map_data = maps[i]
+            team1_map_score = map_data["team_1_score"]
+            team2_map_score = map_data["team_2_score"]
+            map_played = map_data["map_played"]
+            game_id = map_data["game_id"]
             map, _ = Map.objects.update_or_create(
                 game_id=game_id,
                 defaults={
@@ -263,8 +265,8 @@ def ingest_match(match_data: dict, match_url: str):
                 },
             )
 
-            team_1_stats = match_data["team_1_stats"]
-            team_2_stats = match_data["team_2_stats"]
+            team_1_stats = map_data["team_1_stats"]
+            team_2_stats = map_data["team_2_stats"]
 
             for player_stat in team_1_stats + team_2_stats:
                 player_id = get_player_id_from_url(player_stat["player"])
@@ -274,7 +276,7 @@ def ingest_match(match_data: dict, match_url: str):
                 acs = player_stat["acs"]
                 agent_played = player_stat["agent_played"]
 
-                player = Player.objects.get(player_id=player_id)
+                player = Player.objects.get(vlr_id=player_id)
 
                 _, _ = PlayerStats.objects.get_or_create(
                     player=player,
@@ -284,7 +286,7 @@ def ingest_match(match_data: dict, match_url: str):
                         "deaths": deaths,
                         "assists": assists,
                         "acs": acs,
-                        "agent_played": agent_played,
+                        "agent": agent_played,
                     },
                 )
 
