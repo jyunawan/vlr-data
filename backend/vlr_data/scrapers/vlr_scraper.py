@@ -59,6 +59,9 @@ def get_homepage_soup() -> BeautifulSoup:
 def extract_upcoming_match_urls(soup: BeautifulSoup) -> List[str]:
     """Gets the match URLs from the upcoming matches section.
 
+    Args:
+       soup (BeautifulSoup): BeautifulSoup object for the homepage
+
     Returns:
         List[str]: a list of the URLs for the upcoming matches
     """
@@ -158,7 +161,7 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
             "acs": int,                 # player's acs for this map
         }
     """
-    event_url = soup.select_one(".match-header-super a").get("href")
+    event_url = BASE_URL + soup.select_one(".match-header-super a").get("href")
 
     match_date = soup.select_one(".moment-tz-convert")
     eastern = pytz.timezone("America/New_York")
@@ -168,7 +171,16 @@ def parse_match_page(soup: BeautifulSoup) -> dict:
     match_date = eastern.localize(match_date).astimezone(pytz.utc)
 
     team_urls = soup.select(".match-header-vs a")
-    team_urls = [BASE_URL + a.get("href") for a in team_urls]
+
+    # for handling TBD matchups
+    for i in range(len(team_urls)):
+        a = team_urls[i]
+        url = a.get("href")
+
+        if url is None:
+            team_urls[i] = ""
+        else:
+            team_urls[i] = BASE_URL + url
 
     is_finished = (
         soup.select_one(".match-header-vs-note").get_text(strip=True).lower() == "final"
@@ -279,7 +291,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
         {
             "team_name": str,               # name of the team
             "team_tag": str,                # shortened name for the team
-            "active_players": List[dict],   # all active players in the team
+            "players": List[dict],   # all active players in the team
             "team_rating": int,             # VLR team rating
         }
 
@@ -291,26 +303,44 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     }
     """
     team_name = soup.select_one(".team-header-name .wf-title").get_text(strip=True)
-    team_tag = soup.select_one(".team-header-name .wf-title.team-header-tag").get_text(
-        strip=True
-    )
+    team_tag = soup.select_one(".team-header-name .wf-title.team-header-tag")
 
-    players = soup.select(".team-roster-item")[0:5]
+    if team_tag is None:
+        team_tag = team_name
+    else:
+        team_tag = team_tag.get_text(strip=True)
 
-    for i in range(5):
+    players = soup.select(".team-roster-item")
+
+    for i in range(len(players)):
         player_url = BASE_URL + players[i].select_one("a").get("href")
-        real_name = (
-            players[i].select_one(".team-roster-item-name-alias").get_text(strip=True)
-        )
-        ign = players[i].select_one(".team-roster-item-name-real").get_text(strip=True)
+        ign = players[i].select_one(".team-roster-item-name-alias")
+        
+        if ign is None:
+            ign = ""
+        else:
+            ign = ign.get_text(strip=True)
+            
+        real_name = players[i].select_one(".team-roster-item-name-real")
+        
+        if real_name is None:
+            real_name = ""
+        else:
+            real_name = real_name.get_text(strip=True)
+        
         players[i] = {"real_name": real_name, "ign": ign, "url": player_url}
 
-    team_rating = int(soup.select_one(".rating-num").get_text(strip=True))
+    team_rating = soup.select_one(".rating-num").get_text(strip=True)
+
+    if team_rating.lower() == "unranked":
+        team_rating = 0
+    else:
+        team_rating = int(team_rating)
 
     return {
         "team_name": team_name,
         "team_tag": team_tag,
-        "active_players": players,
+        "players": players,
         "team_rating": team_rating,
     }
 
