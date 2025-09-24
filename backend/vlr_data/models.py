@@ -24,15 +24,15 @@ class Player(models.Model):
 
 
 class Event(models.Model):
-    name = models.Charfield("Event", max_length=100)
+    name = models.CharField("Event", max_length=100)
     series = models.CharField("Series", max_length=100)
     vlr_url = models.URLField("Event Series URL", unique=True)
 
 
 class Match(models.Model):
     event = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
-    team1 = models.ForeignKey(Team, on_delete=models.CASCADE)
-    team2 = models.ForeignKey(Team, on_delete=models.CASCADE)
+    team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_1_matches")
+    team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_2_matches")
     date_played = models.DateTimeField("Match Date")
     vlr_id = models.CharField("VLR Match ID", unique=True)
     is_finished = models.BooleanField("Match Finished")
