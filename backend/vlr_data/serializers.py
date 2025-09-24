@@ -1,6 +1,6 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CharField
 
-from .models import Match, Team
+from .models import Match, Player, Team
 
 
 class TeamSerializer(ModelSerializer):
@@ -10,6 +10,10 @@ class TeamSerializer(ModelSerializer):
 
 
 class MatchSerializer(ModelSerializer):
+    team1 = CharField(source="team1.vlr_id", read_only=True)
+    team2= CharField(source="team2.vlr_id", read_only=True)
+    event = CharField(source="event.vlr_url", read_only=True)
+    
     class Meta:
         model = Match
         fields = [
@@ -21,4 +25,16 @@ class MatchSerializer(ModelSerializer):
             "is_finished",
             "team1_score",
             "team2_score",
+        ]
+        
+class PlayerSerializer(ModelSerializer):
+    team = CharField(source="team.vlr_id", read_only = True)
+    
+    class Meta:
+        model = Player
+        fields = [
+            "ign",
+            "real_name",
+            "team",
+            "vlr_id"
         ]
