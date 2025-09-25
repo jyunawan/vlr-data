@@ -65,6 +65,7 @@ def ingest_team(team_data: dict, team_url: str):
         team_data (dict): Parsed data about the team, should include keys:
                             - "team_name": str - full name of the team
                             - "team_tag": str - shortened name for the team
+                            - "team_logo_url": str - URL for the team logo
                             - "team_rating": int - VLR team rating
                             - "player": List[dict] - List of active player info with keys:
                                 - "real_name": str - player's real name
@@ -79,6 +80,7 @@ def ingest_team(team_data: dict, team_url: str):
             defaults={
                 "name": team_data["team_name"],
                 "team_tag": team_data["team_tag"],
+                "team_logo_url": team_data["team_logo_url"]
                 "team_rating": team_data["team_rating"],
                 "last_updated": timezone.now(),
             },

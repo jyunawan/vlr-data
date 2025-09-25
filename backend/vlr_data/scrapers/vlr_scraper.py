@@ -291,6 +291,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
         {
             "team_name": str,               # name of the team
             "team_tag": str,                # shortened name for the team
+            "team_logo_url": str,           # logo URL for the team
             "players": List[dict],   # all active players in the team
             "team_rating": int,             # VLR team rating
         }
@@ -303,6 +304,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     }
     """
     team_name = soup.select_one(".team-header-name .wf-title").get_text(strip=True)
+    team_logo = soup.select_one(".wf_avatar.team-header-logo img").get("src")
     team_tag = soup.select_one(".team-header-name .wf-title.team-header-tag")
 
     if team_tag is None:
@@ -340,6 +342,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     return {
         "team_name": team_name,
         "team_tag": team_tag,
+        "team_logo_url": team_logo,
         "players": players,
         "team_rating": team_rating,
     }

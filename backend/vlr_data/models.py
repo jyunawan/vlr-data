@@ -3,7 +3,8 @@ from django.db import models
 
 class Team(models.Model):
     name = models.CharField("Team Name", max_length=100)
-    team_tag = models.CharField("Team Tag", max_length=5)
+    team_tag = models.CharField("Team Tag", max_length=100)
+    team_logo_url = models.CharField("Team Logo URL")
     team_rating = models.PositiveSmallIntegerField("Team Rating")
     vlr_id = models.CharField("VLR Team ID", unique=True)
     last_updated = models.DateTimeField("Last Updated")
