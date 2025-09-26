@@ -22,7 +22,12 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["src/*"],
+      "@components/*": ["src/components"],
+      "@utils/*": ["src/utils"],
+      "@assets/*": ["src/assets"],
+      "@hooks/*": ["src/hooks"],
+      "@types/*": ["src/types"],
     }
   }
 }
