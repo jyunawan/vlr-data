@@ -80,7 +80,7 @@ def ingest_team(team_data: dict, team_url: str):
             defaults={
                 "name": team_data["team_name"],
                 "team_tag": team_data["team_tag"],
-                "team_logo_url": team_data["team_logo_url"]
+                "team_logo_url": team_data["team_logo_url"],
                 "team_rating": team_data["team_rating"],
                 "last_updated": timezone.now(),
             },

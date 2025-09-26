@@ -304,7 +304,7 @@ def parse_team_page(soup: BeautifulSoup) -> dict:
     }
     """
     team_name = soup.select_one(".team-header-name .wf-title").get_text(strip=True)
-    team_logo = soup.select_one(".wf_avatar.team-header-logo img").get("src")
+    team_logo = soup.select_one(".team-header-logo img").get("src")
     team_tag = soup.select_one(".team-header-name .wf-title.team-header-tag")
 
     if team_tag is None:
