@@ -12,7 +12,6 @@ export default function Navbar() {
       <div className="w-1/3">
         <Link to="/" className="h-12 w-12 inline-block">
           <img
-            className="h-12 w-12"
             src="/src/assets/images/logo.png"
             alt="logo"
           />
