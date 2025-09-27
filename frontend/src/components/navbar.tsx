@@ -19,7 +19,7 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex w-1/3 flex-row justify-center space-x-4">
-        {navigation.map((item) => (
+        {navigation.map((item, idx) => (
           <Link
             to={item.href}
             className="text-neutral-400 hover:text-white"
@@ -27,6 +27,7 @@ export default function Navbar() {
               className:
                 "text-purple-50 underline underline-offset-8 decoration-blue-600 decoration-4",
             }}
+            key={idx}
           >
             {item.name}
           </Link>
