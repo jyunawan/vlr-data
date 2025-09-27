@@ -10,9 +10,10 @@ export default function Navbar() {
   return (
     <div className="flex flex-row items-center justify-between py-1">
       <div className="w-1/3">
-        <Link to="/" className="h-12 w-12 inline-block">
+        <Link to="/">
           <img
             src="/src/assets/images/logo.png"
+            className="size-12"
             alt="logo"
           />
         </Link>
